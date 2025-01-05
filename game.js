@@ -135,12 +135,14 @@ function HermioneMathGame() {
 
 const checkFatLadyAnswer = (selectedAnswer) => {
     if (selectedAnswer === problem.correctAnswer) {
-        setScore(score + 1);  // מוסיף נקודה על כל תשובה נכונה
+        const newScore = score + 1;  // שומרים את הציון החדש במשתנה
+        setScore(newScore);  // מעדכנים את הציון
         
-        if (score >= 14) {  // אחרי 15 תשובות נכונות
+        if (newScore >= 15) {  // בודקים לפי הציון החדש במקום הישן
             setMessage('מצוין! הגברת השמנה מאפשרת לך להיכנס!');
             setTimeout(() => {
                 setGameState(GAME_STATES.POTIONS_INTRO);
+                setScore(0);  // מאפסים את הציון לשלב הבא
             }, 1500);
         } else {
             setMessage('נכון מאוד!');
