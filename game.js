@@ -53,32 +53,24 @@ function HermioneMathGame() {
   const [message, setMessage] = React.useState('');
   const [score, setScore] = React.useState(0);
   // Generate math problem
-  const generateProblem = React.useCallback(() => {
-    const isEasyQuestion = currentQuestion % 5 === 4;
-    let num1, num2;
+ const generateProblem = React.useCallback(() => {
+  let num1, num2, correctAnswer, missingIndex;
+  num1 = Math.floor(Math.random() * 9) + 2; // מספר ראשון
+  num2 = Math.floor(Math.random() * 9) + 2; // מספר שני
+  correctAnswer = num1 * num2; // התוצאה
 
-    if (isEasyQuestion) {
-      num1 = Math.floor(Math.random() * 5) + 2;
-      num2 = Math.floor(Math.random() * 5) + 2;
-    } else {
-      num1 = Math.floor(Math.random() * 6) + 5;
-      num2 = Math.floor(Math.random() * 6) + 5;
-    }
+  // בחירת איבר חסר אקראי: 0, 1, או 2
+  missingIndex = Math.floor(Math.random() * 3);
 
-    if (gameState === GAME_STATES.FAT_LADY) {
-      const correctAnswer = num1 * num2;
-      const options = [
-        correctAnswer,
-        correctAnswer + Math.floor(Math.random() * 10) + 1,
-        correctAnswer - Math.floor(Math.random() * 10) - 1,
-        correctAnswer + Math.floor(Math.random() * 20) - 10
-      ].sort(() => Math.random() - 0.5);
-      
-      setProblem({ num1, num2, options, correctAnswer });
-    } else {
-      setProblem({ num1, num2, correctAnswer: num1 * num2 });
-    }
-  }, [gameState, currentQuestion]);
+  let problem = {
+    num1,
+    num2,
+    correctAnswer,
+    missingIndex // מציין איזה איבר חסר
+  };
+
+  setProblem(problem);
+}, [gameState, currentQuestion]);
 
   // Initialize stage
   React.useEffect(() => {
@@ -206,7 +198,44 @@ const checkAnswer = () => {
   }
   setUserAnswer('');
 };
+const checkRoomRequirementAnswer = () => {
+  if (!userAnswer) return;
 
+  const answer = parseInt(userAnswer);
+  let isCorrect = false;
+
+  // בדיקת תשובה לפי המיקום החסר
+  switch (problem.missingIndex) {
+    case 0: // num1 חסר
+      isCorrect = answer * problem.num2 === problem.correctAnswer;
+      break;
+    case 1: // num2 חסר
+      isCorrect = problem.num1 * answer === problem.correctAnswer;
+      break;
+    case 2: // התוצאה חסרה
+      isCorrect = problem.num1 * problem.num2 === answer;
+      break;
+  }
+
+  if (isCorrect) {
+    setMessage('נכון מאוד!');
+    if (currentQuestion === 14) {
+      setTimeout(() => setGameState(GAME_STATES.BELLATRIX_INTRO), 1500);
+    } else {
+      setCurrentQuestion(prev => prev + 1);
+      setUserAnswer('');
+    }
+  } else {
+    setMessage('לא נכון, נסי שוב!');
+    setLives(prev => {
+      const newLives = prev - 1;
+      if (newLives <= 0) {
+        setGameState(GAME_STATES.GAME_OVER);
+      }
+      return newLives;
+    });
+  }
+};
   const nextState = () => {
     switch (gameState) {
       case GAME_STATES.ROOM_OF_REQUIREMENT:
@@ -329,54 +358,48 @@ if (gameState === GAME_STATES.POTIONS_CLASS) {
 }
 
   // Render Room of Requirement screen
-  if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
-    return (
-      <div className="game-container">
-        <div className="game-card">
-          <div className="flex justify-between items-center mb-6">
-            <div className="text-lg">שאלה {currentQuestion + 1}/15</div>
-            <div className="text-xl font-bold bg-purple-100 px-4 py-2 rounded-lg">
-              {formatTime(timeLeft)}
-            </div>
-          </div>
-          
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4">חדר הנחיצות</h2>
-            <div className="flex justify-center gap-2 mb-4">
-              {[...Array(lives)].map((_, i) => (
-                <span key={i} className="text-red-500 text-2xl">❤️</span>
-              ))}
-            </div>
-            <div className="space-y-4">
-              <p className="text-2xl font-bold">
-                {problem.num1} × {problem.num2} = {problem.correctAnswer}
-              </p>
-              <div className="flex justify-center gap-4">
-                <input
-                  type="number"
-                  value={userAnswer}
-                  onChange={(e) => setUserAnswer(e.target.value)}
-                  className="w-24 text-center text-xl border rounded p-2"
-                  placeholder="?"
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      checkAnswer();
-                    }
-                  }}
-                />
-                <button 
-                  className="game-button"
-                  onClick={checkAnswer}
-                >
-                  הטל לחש!
-                </button>
-              </div>
-            </div>
-          </div>
+ if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
+  return (
+    <div className="game-container">
+      <div className="game-card">
+        <h1 className="text-3xl font-bold mb-6 text-purple-800">חדר הנחיצות</h1>
+        <p className="text-lg mb-4">פתרי את המשוואה כדי להמשיך!</p>
+        <div className="flex justify-center gap-2 mb-4">
+          {[...Array(lives)].map((_, i) => (
+            <span key={i} className="text-red-500 text-2xl">❤️</span>
+          ))}
         </div>
+        <p className="text-md mb-4">שאלה {currentQuestion + 1}/15</p>
+
+        {problem && (
+          <div>
+            <p className="text-xl font-bold mb-4">
+              {problem.missingIndex === 0 ? '?' : problem.num1} × 
+              {problem.missingIndex === 1 ? '?' : problem.num2} = 
+              {problem.missingIndex === 2 ? '?' : problem.correctAnswer}
+            </p>
+            <input
+              type="number"
+              value={userAnswer}
+              onChange={(e) => setUserAnswer(e.target.value)}
+              className="w-24 text-center text-xl border rounded p-2"
+              placeholder="?"
+            />
+            <button 
+              className="game-button mt-4"
+              onClick={checkRoomRequirementAnswer}
+            >
+              בדוק תשובה
+            </button>
+          </div>
+        )}
+        {message && (
+          <p className="mt-4 text-lg font-bold">{message}</p>
+        )}
       </div>
-    );
-  }
+    </div>
+  );
+}
 // Render Bellatrix Fight screen
   if (gameState === GAME_STATES.BELLATRIX_FIGHT) {
     return (
