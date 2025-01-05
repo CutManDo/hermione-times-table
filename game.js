@@ -1,3 +1,4 @@
+"use strict";
 // Game States
 const GAME_STATES = {
   INTRO: 'intro',
@@ -477,4 +478,8 @@ function HermioneMathGame() {
 
 // Mount the app
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(React.createElement(HermioneMathGame));
+root.render(
+  React.createElement(React.StrictMode, null,
+    React.createElement(HermioneMathGame)
+  )
+);
