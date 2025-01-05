@@ -76,7 +76,14 @@ function HermioneMathGame() {
       
       setProblem({ num1, num2, options, correctAnswer });
     } else {
-      setProblem({ num1, num2, correctAnswer: num1 * num2 });
+    let hiddenPosition = Math.random() < 0.5 ? 'num1' : 'num2';
+const correctAnswer = hiddenPosition === 'num1' ? num1 : num2;
+setProblem({ 
+  num1: hiddenPosition === 'num1' ? '?' : num1, 
+  num2: hiddenPosition === 'num2' ? '?' : num2, 
+  correctAnswer, 
+  hiddenPosition 
+});
     }
   }, [gameState, currentQuestion]);
 
@@ -164,7 +171,12 @@ const checkFatLadyAnswer = (selectedAnswer) => {
     if (!userAnswer) return;
     
     const answer = parseInt(userAnswer);
-    if (answer === problem.correctAnswer) {
+    const isCorrect = gameState === GAME_STATES.ROOM_OF_REQUIREMENT 
+    ? (problem.hiddenPosition === 'num1' 
+        ? answer * problem.num2 === problem.num2 * problem.correctAnswer
+        : problem.num1 * answer === problem.num1 * problem.correctAnswer)
+    : answer === problem.correctAnswer;
+if (isCorrect) {
         const newQuestion = currentQuestion + 1;
         setCurrentQuestion(newQuestion);
         setMessage('מצוין! הצלחת להדוף את הלחש!');
@@ -344,8 +356,10 @@ if (gameState === GAME_STATES.POTIONS_CLASS) {
             </div>
             <div className="space-y-4">
               <p className="text-2xl font-bold">
-                {problem.num1} × {problem.num2} = {problem.correctAnswer}
-              </p>
+  {problem.num1} × {problem.num2} = 
+  {problem.hiddenPosition === 'num1' ? '?' : problem.num1} × 
+  {problem.hiddenPosition === 'num2' ? '?' : problem.num2}
+</p>
               <div className="flex justify-center gap-4">
                 <input
                   type="number"
