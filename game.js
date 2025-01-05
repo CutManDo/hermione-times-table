@@ -132,19 +132,22 @@ function HermioneMathGame() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const checkFatLadyAnswer = (selectedAnswer) => {
+ const checkFatLadyAnswer = (selectedAnswer) => {
     if (selectedAnswer === problem.correctAnswer) {
       const nextQuestion = currentQuestion + 1;
-      if (nextQuestion >= 15) {
+      console.log('Current question:', currentQuestion, 'Next question:', nextQuestion); // דיבוג
+
+      if (nextQuestion === 15) {  // שינינו מ->= ל-===
         setMessage('מצוין! הגברת השמנה מאפשרת לך להיכנס!');
         setTimeout(() => {
           setGameState(GAME_STATES.POTIONS_INTRO);
-          setCurrentQuestion(0);  // מאפס את מספר השאלות לשלב הבא
         }, 1500);
       } else {
         setMessage('נכון מאוד!');
         setCurrentQuestion(nextQuestion);
-        generateProblem();
+        setTimeout(() => {
+          generateProblem();
+        }, 500);
       }
     } else {
       setMessage('לא נכון, נסי שוב!');
