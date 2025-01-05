@@ -134,16 +134,23 @@ function HermioneMathGame() {
 
 const checkFatLadyAnswer = (selectedAnswer) => {
     if (selectedAnswer === problem.correctAnswer) {
-      const nextQuestion = currentQuestion + 1;
-      if (nextQuestion === 15) {  
+      if (currentQuestion === 14) {  // אם זו השאלה האחרונה (0-14)
         setMessage('מצוין! הגברת השמנה מאפשרת לך להיכנס!');
         setTimeout(() => {
           setGameState(GAME_STATES.POTIONS_INTRO);
         }, 1500);
       } else {
         setMessage('נכון מאוד!');
-        setCurrentQuestion(nextQuestion);
-        generateProblem();
+ setCurrentQuestion(prev => {
+  const nextQuestion = prev + 1;
+  generateProblem();
+   useEffect(() => {
+  if (gameState === GAME_STATES.FAT_LADY) {
+  }
+}, [currentQuestion, gameState]);
+  return nextQuestion;
+});
+setUserAnswer('');
       }
     } else {
       setMessage('לא נכון, נסי שוב!');
@@ -155,8 +162,7 @@ const checkFatLadyAnswer = (selectedAnswer) => {
         return newLives;
       });
     }
-};
-
+  };
   // Regular answer check
   const checkAnswer = () => {
     if (!userAnswer) return;
