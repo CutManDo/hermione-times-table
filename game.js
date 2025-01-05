@@ -221,38 +221,40 @@ const checkFatLadyAnswer = (selectedAnswer) => {
     );
   }
 
-  // Render Fat Lady screen
- if (gameState === GAME_STATES.FAT_LADY) {
+// Render Fat Lady screen
+if (gameState === GAME_STATES.FAT_LADY) {
   return (
     <div className="game-container">
       <div className="game-card">
-        <h1 className="text-3xl font-bold mb-6 text-purple-800">הגברת השמנה</h1>
-        <p className="text-lg mb-4">עלייך לענות על 15 שאלות כדי להיכנס למועדון גריפינדור</p>
-        <div className="flex justify-center gap-2 mb-4">
-          {[...Array(lives)].map((_, i) => (
-            <span key={i} className="text-red-500 text-2xl">❤️</span>
-          ))}
-        </div>
-        <p className="text-md mb-4">שאלה {currentQuestion + 1} מתוך 15</p>
-        {problem && (
-          <div>
-            <p className="text-xl font-bold mb-4">{problem.num1} × {problem.num2} = ?</p>
-            <div className="grid grid-cols-2 gap-4">
-              {problem.options.map((option, index) => (
-                <button
-                  key={index}
-                  className="game-button"
-                  onClick={() => checkFatLadyAnswer(option)}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
+        <div className="text-center">  {/* הוספת div זה */}
+          <h1 className="text-3xl font-bold mb-6 text-purple-800">הגברת השמנה</h1>
+          <p className="text-lg mb-4">עלייך לענות על 15 שאלות כדי להיכנס למועדון גריפינדור</p>
+          <div className="flex justify-center gap-2 mb-4">
+            {[...Array(lives)].map((_, i) => (
+              <span key={i} className="text-red-500 text-2xl">❤️</span>
+            ))}
           </div>
-        )}
-        {message && (
-          <p className="mt-4 text-lg font-bold">{message}</p>
-        )}
+          <p className="text-md mb-4">שאלה {currentQuestion + 1} מתוך 15</p>
+          {problem && (
+            <div>
+              <p className="text-xl font-bold mb-4">{problem.num1} × {problem.num2} = ?</p>
+              <div className="grid grid-cols-2 gap-4">
+                {problem.options.map((option, index) => (
+                  <button
+                    key={index}
+                    className="game-button"
+                    onClick={() => checkFatLadyAnswer(option)}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {message && (
+            <p className="mt-4 text-lg font-bold">{message}</p>
+          )}
+        </div>
       </div>
     </div>
   );
