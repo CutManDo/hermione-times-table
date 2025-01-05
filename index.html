@@ -4,14 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>הרפתקת החשבון של הרמיוני</title>
-    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- React Production -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Styles -->
     <link href="styles.css" rel="stylesheet">
+    <!-- Add better error handling -->
+    <script>
+        window.onerror = function(msg, url, line) {
+            console.log('Error: ' + msg + '\nURL: ' + url + '\nLine: ' + line);
+            return false;
+        };
+    </script>
 </head>
 <body>
     <div id="root"></div>
-    <script type="text/babel" src="game.js"></script>
+    <script type="text/babel" src="game.js" data-type="module"></script>
 </body>
 </html>
