@@ -144,6 +144,10 @@ const checkFatLadyAnswer = (selectedAnswer) => {
  setCurrentQuestion(prev => {
   const nextQuestion = prev + 1;
   generateProblem();
+   useEffect(() => {
+  if (gameState === GAME_STATES.FAT_LADY) {
+  }
+}, [currentQuestion, gameState]);
   return nextQuestion;
 });
 setUserAnswer('');
