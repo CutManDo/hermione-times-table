@@ -90,12 +90,16 @@ function HermioneMathGame() {
         setCurrentCharacter(CHARACTERS.fatLady);
         generateProblem();
         break;
-      case GAME_STATES.POTIONS_CLASS:
-        setTimeLeft(300);
-        setCurrentQuestion(0);
-        setCurrentCharacter(CHARACTERS.draco);
-        generateProblem();
-        break;
+     case GAME_STATES.POTIONS_CLASS:
+  if (currentCharacter === null) { // בדיקה אם זו הכניסה הראשונה לשלב
+    setTimeLeft(300); // מאתחל טיימר רק בפעם הראשונה
+  }
+  setCurrentQuestion(0);
+  if (!currentCharacter) {
+    setCurrentCharacter(CHARACTERS.draco);
+  }
+  generateProblem();
+  break;
       case GAME_STATES.ROOM_OF_REQUIREMENT:
         setLives(3);
         setTimeLeft(300);
@@ -173,10 +177,11 @@ const checkAnswer = () => {
       if (currentCharacter === CHARACTERS.draco) {
         setMessage('דראקו נסוג! אבל מי זה מגיע...');
         setTimeout(() => {
-          setCurrentCharacter(CHARACTERS.filch);
-          setScore(0); // מאפסים את הציון
-          generateProblem();
-        }, 1500);
+  setCurrentCharacter(CHARACTERS.filch);
+  setScore(0);
+  // לא מאפסים את הטיימר, רק ממשיכים
+  generateProblem();
+}, 1500);
       } else if (currentCharacter === CHARACTERS.filch) {
         setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
         setTimeout(() => {
