@@ -242,7 +242,7 @@ const checkFatLadyAnswer = (selectedAnswer) => {
                 <button
                   key={index}
                   className="game-button"
-                  onClick={() => checkAnswer(option)}
+                  onClick={() => checkFatLadyAnswer(option)}
                 >
                   {option}
                 </button>
