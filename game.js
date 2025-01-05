@@ -132,14 +132,17 @@ function HermioneMathGame() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Check answer for Fat Lady stage
   const checkFatLadyAnswer = (selectedAnswer) => {
     if (selectedAnswer === problem.correctAnswer) {
-      setMessage('נכון מאוד!');
       const nextQuestion = currentQuestion + 1;
       if (nextQuestion >= 15) {
-        setGameState(GAME_STATES.POTIONS_INTRO);
+        setMessage('מצוין! הגברת השמנה מאפשרת לך להיכנס!');
+        setTimeout(() => {
+          setGameState(GAME_STATES.POTIONS_INTRO);
+          setCurrentQuestion(0);  // מאפס את מספר השאלות לשלב הבא
+        }, 1500);
       } else {
+        setMessage('נכון מאוד!');
         setCurrentQuestion(nextQuestion);
         generateProblem();
       }
