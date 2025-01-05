@@ -92,12 +92,12 @@ function HermioneMathGame() {
   }
   generateProblem();
   break;
-      case GAME_STATES.ROOM_OF_REQUIREMENT:
-        setLives(3);
-        setTimeLeft(300);
-        setCurrentQuestion(0);
-        generateProblem();
-        break;
+     case GAME_STATES.ROOM_OF_REQUIREMENT:
+  setLives(3);
+  setTimeLeft(300);
+  setCurrentQuestion(0);
+  generateRequirementProblem(); // יצירת בעיות לחדר הנחיצות בלבד
+  break;
       case GAME_STATES.BELLATRIX_FIGHT:
         setTimeLeft(120);
         setCurrentQuestion(0);
@@ -198,6 +198,24 @@ const checkAnswer = () => {
   }
   setUserAnswer('');
 };
+const generateRequirementProblem = React.useCallback(() => {
+  let num1, num2, correctAnswer, missingIndex;
+  num1 = Math.floor(Math.random() * 9) + 2; // מספר ראשון
+  num2 = Math.floor(Math.random() * 9) + 2; // מספר שני
+  correctAnswer = num1 * num2; // התוצאה
+
+  // בחירת איבר חסר אקראי: 0, 1, או 2
+  missingIndex = Math.floor(Math.random() * 3);
+
+  let problem = {
+    num1,
+    num2,
+    correctAnswer,
+    missingIndex // מציין איזה איבר חסר
+  };
+
+  setProblem(problem);
+}, [gameState, currentQuestion]);  
 const checkRoomRequirementAnswer = () => {
   if (!userAnswer) return;
 
@@ -223,6 +241,7 @@ const checkRoomRequirementAnswer = () => {
       setTimeout(() => setGameState(GAME_STATES.BELLATRIX_INTRO), 1500);
     } else {
       setCurrentQuestion(prev => prev + 1);
+      generateRequirementProblem(); // מעדכנים בעיה חדשה
       setUserAnswer('');
     }
   } else {
