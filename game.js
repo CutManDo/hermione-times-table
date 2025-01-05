@@ -141,9 +141,12 @@ const checkFatLadyAnswer = (selectedAnswer) => {
         }, 1500);
       } else {
         setMessage('נכון מאוד!');
-        setCurrentQuestion(prev => {  // קודם נעדכן את השאלה
-  const nextQuestion = prev + 1;
-  generateProblem();  // ואז ניצור שאלה חדשה
+    setCurrentQuestion(prev => {
+  const nextQuestion = prev + 1; // עדכון השאלה קודם
+  generateProblem(); // ואז יצירת שאלה חדשה
+  return nextQuestion; // החזרת הערך המעודכן
+});
+setUserAnswer('');
   return nextQuestion;
 });
       }
