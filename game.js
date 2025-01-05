@@ -1,3 +1,4 @@
+// Game States
 const GAME_STATES = {
   INTRO: 'intro',
   FAT_LADY: 'fatLady',
@@ -11,6 +12,7 @@ const GAME_STATES = {
   GAME_OVER: 'gameOver'
 };
 
+// Characters
 const CHARACTERS = {
   fatLady: {
     name: 'הגברת השמנה',
@@ -48,7 +50,6 @@ function HermioneMathGame() {
   const [problem, setProblem] = React.useState(null);
   const [userAnswer, setUserAnswer] = React.useState('');
   const [message, setMessage] = React.useState('');
-
   // Generate math problem
   const generateProblem = React.useCallback(() => {
     const isEasyQuestion = currentQuestion % 5 === 4;
@@ -107,7 +108,6 @@ function HermioneMathGame() {
         break;
     }
   }, [gameState, generateProblem]);
-
   // Timer effect
   React.useEffect(() => {
     let timer;
@@ -198,8 +198,7 @@ function HermioneMathGame() {
         return GAME_STATES.GAME_OVER;
     }
   };
-
-  // Render different game states
+  // Render intro screen
   if (gameState === GAME_STATES.INTRO) {
     return (
       <div className="game-container">
@@ -220,6 +219,7 @@ function HermioneMathGame() {
     );
   }
 
+  // Render Fat Lady screen
   if (gameState === GAME_STATES.FAT_LADY) {
     return (
       <div className="game-container">
@@ -234,7 +234,7 @@ function HermioneMathGame() {
             </div>
             <p className="text-md mb-4">שאלה {currentQuestion + 1} מתוך 15</p>
             {problem && (
-              <>
+              <div>
                 <p className="text-xl font-bold mb-4">{problem.num1} × {problem.num2} = ?</p>
                 <div className="grid grid-cols-2 gap-4">
                   {problem.options.map((option, index) => (
@@ -247,7 +247,7 @@ function HermioneMathGame() {
                     </button>
                   ))}
                 </div>
-              </>
+              </div>
             )}
             {message && (
               <p className="mt-4 text-lg font-bold">{message}</p>
@@ -257,7 +257,7 @@ function HermioneMathGame() {
       </div>
     );
   }
-
+// Render Potions Class screen
   if (gameState === GAME_STATES.POTIONS_CLASS) {
     return (
       <div className="game-container">
@@ -308,6 +308,7 @@ function HermioneMathGame() {
     );
   }
 
+  // Render Room of Requirement screen
   if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
     return (
       <div className="game-container">
@@ -321,6 +322,11 @@ function HermioneMathGame() {
           
           <div className="text-center">
             <h2 className="text-2xl font-bold mb-4">חדר הנחיצות</h2>
+            <div className="flex justify-center gap-2 mb-4">
+              {[...Array(lives)].map((_, i) => (
+                <span key={i} className="text-red-500 text-2xl">❤️</span>
+              ))}
+            </div>
             <div className="space-y-4">
               <p className="text-2xl font-bold">
                 {problem.num1} × {problem.num2} = {problem.correctAnswer}
@@ -346,16 +352,12 @@ function HermioneMathGame() {
                 </button>
               </div>
             </div>
-            
-            {message && (
-              <p className="mt-4 text-lg font-bold">{message}</p>
-            )}
           </div>
         </div>
       </div>
     );
   }
-
+// Render Bellatrix Fight screen
   if (gameState === GAME_STATES.BELLATRIX_FIGHT) {
     return (
       <div className="game-container">
@@ -378,4 +380,101 @@ function HermioneMathGame() {
                   <input
                     type="number"
                     value={userAnswer}
-                    onChange={(e) => setUserAnswer(e.target.
+                    onChange={(e) => setUserAnswer(e.target.value)}
+                    className="w-24 text-center text-xl border rounded p-2"
+                    placeholder="?"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        checkAnswer();
+                      }
+                    }}
+                  />
+                  <button 
+                    className="game-button"
+                    onClick={checkAnswer}
+                  >
+                    הטל לחש!
+                  </button>
+                </div>
+              </div>
+            )}
+            
+            {message && (
+              <p className="mt-4 text-lg font-bold">{message}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Render Victory screen
+  if (gameState === GAME_STATES.VICTORY) {
+    return (
+      <div className="game-container">
+        <div className="game-card text-center">
+          <h1 className="text-3xl font-bold mb-6 text-purple-800">כל הכבוד!</h1>
+          <p className="text-xl mb-4">הצלחת להביס את בלטריקס!</p>
+          <button 
+            className="game-button"
+            onClick={() => setGameState(GAME_STATES.INTRO)}
+          >
+            שחקי שוב!
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Render Game Over screen
+  if (gameState === GAME_STATES.GAME_OVER) {
+    return (
+      <div className="game-container">
+        <div className="game-card text-center">
+          <h1 className="text-3xl font-bold mb-6 text-red-800">המשחק נגמר!</h1>
+          <button 
+            className="game-button"
+            onClick={() => setGameState(GAME_STATES.INTRO)}
+          >
+            נסי שוב!
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Default render for stage intros
+  return (
+    <div className="game-container">
+      <div className="game-card text-center">
+        <h1 className="text-3xl font-bold mb-6 text-purple-800">
+          {gameState === GAME_STATES.POTIONS_INTRO && 'בדרך לשיעור שיקויים'}
+          {gameState === GAME_STATES.ROOM_OF_REQUIREMENT_INTRO && 'חדר הנחיצות'}
+          {gameState === GAME_STATES.BELLATRIX_INTRO && 'בלטריקס!'}
+        </h1>
+        <button 
+          className="game-button"
+          onClick={() => {
+            switch (gameState) {
+              case GAME_STATES.POTIONS_INTRO:
+                setGameState(GAME_STATES.POTIONS_CLASS);
+                break;
+              case GAME_STATES.ROOM_OF_REQUIREMENT_INTRO:
+                setGameState(GAME_STATES.ROOM_OF_REQUIREMENT);
+                break;
+              case GAME_STATES.BELLATRIX_INTRO:
+                setGameState(GAME_STATES.BELLATRIX_FIGHT);
+                break;
+            }
+          }}
+        >
+          המשיכי!
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// Mount the app
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(HermioneMathGame));
