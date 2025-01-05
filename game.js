@@ -160,38 +160,48 @@ const checkFatLadyAnswer = (selectedAnswer) => {
     }
 };
   // Regular answer check
-  const checkAnswer = () => {
+ const checkAnswer = () => {
     if (!userAnswer) return;
     
     const answer = parseInt(userAnswer);
     if (answer === problem.correctAnswer) {
-      setMessage('מצוין!');
-      const nextQuestion = currentQuestion + 1;
-      if (nextQuestion >= 5) {
-        if (gameState === GAME_STATES.POTIONS_CLASS) {
-          if (currentCharacter === CHARACTERS.draco) {
-            setCurrentCharacter(CHARACTERS.filch);
-          } else if (currentCharacter === CHARACTERS.filch) {
-            setCurrentCharacter(CHARACTERS.pansy);
-          } else {
-            setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
-          }
+        const newQuestion = currentQuestion + 1;
+        setCurrentQuestion(newQuestion);
+        setMessage('מצוין!');
+        
+        if (newQuestion >= 5) {
+            if (gameState === GAME_STATES.POTIONS_CLASS) {
+                if (currentCharacter === CHARACTERS.draco) {
+                    setTimeout(() => {
+                        setCurrentCharacter(CHARACTERS.filch);
+                        setCurrentQuestion(0);
+                        generateProblem();
+                    }, 1500);
+                } else if (currentCharacter === CHARACTERS.filch) {
+                    setTimeout(() => {
+                        setCurrentCharacter(CHARACTERS.pansy);
+                        setCurrentQuestion(0);
+                        generateProblem();
+                    }, 1500);
+                } else {
+                    setTimeout(() => {
+                        setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
+                    }, 1500);
+                }
+            } else {
+                setGameState(nextState());
+            }
         } else {
-          setGameState(nextState());
+            generateProblem();
         }
-        setCurrentQuestion(0);
-      } else {
-        setCurrentQuestion(nextQuestion);
-      }
-      generateProblem();
     } else {
-      setMessage('לא נכון, נסי שוב!');
-      if (lives > 0) {
-        setLives(prev => prev - 1);
-      }
+        setMessage('לא נכון, נסי שוב!');
+        if (lives > 0) {
+            setLives(prev => prev - 1);
+        }
     }
     setUserAnswer('');
-  };
+};
 
   const nextState = () => {
     switch (gameState) {
