@@ -167,29 +167,28 @@ const checkFatLadyAnswer = (selectedAnswer) => {
     if (answer === problem.correctAnswer) {
         const newQuestion = currentQuestion + 1;
         setCurrentQuestion(newQuestion);
-        setMessage('מצוין!');
+        setMessage('מצוין! הצלחת להדוף את הלחש!');
         
-        if (newQuestion >= 5) {
-            if (gameState === GAME_STATES.POTIONS_CLASS) {
-                if (currentCharacter === CHARACTERS.draco) {
-                    setTimeout(() => {
-                        setCurrentCharacter(CHARACTERS.filch);
-                        setCurrentQuestion(0);
-                        generateProblem();
-                    }, 1500);
-                } else if (currentCharacter === CHARACTERS.filch) {
-                    setTimeout(() => {
-                        setCurrentCharacter(CHARACTERS.pansy);
-                        setCurrentQuestion(0);
-                        generateProblem();
-                    }, 1500);
-                } else {
-                    setTimeout(() => {
-                        setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
-                    }, 1500);
-                }
+        if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
+            if (currentCharacter === CHARACTERS.draco) {
+                setMessage('דראקו נסוג! אבל מי זה מגיע...');
+                setTimeout(() => {
+                    setCurrentCharacter(CHARACTERS.filch);
+                    setCurrentQuestion(0);
+                    generateProblem();
+                }, 1500);
+            } else if (currentCharacter === CHARACTERS.filch) {
+                setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
+                setTimeout(() => {
+                    setCurrentCharacter(CHARACTERS.pansy);
+                    setCurrentQuestion(0);
+                    generateProblem();
+                }, 1500);
             } else {
-                setGameState(nextState());
+                setMessage('הצלחת לעבור את כולם!');
+                setTimeout(() => {
+                    setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
+                }, 1500);
             }
         } else {
             generateProblem();
@@ -274,12 +273,12 @@ if (gameState === GAME_STATES.FAT_LADY) {
   );
 }
 // Render Potions Class screen
-  if (gameState === GAME_STATES.POTIONS_CLASS) {
+if (gameState === GAME_STATES.POTIONS_CLASS) {
     return (
       <div className="game-container">
         <div className="game-card">
           <div className="flex justify-between items-center mb-6">
-            <div className="text-lg">שאלה {currentQuestion + 1}/5</div>
+            {/* הסרנו את תצוגת מספר השאלה */}
             <div className="text-xl font-bold bg-purple-100 px-4 py-2 rounded-lg">
               {formatTime(timeLeft)}
             </div>
@@ -322,7 +321,7 @@ if (gameState === GAME_STATES.FAT_LADY) {
         </div>
       </div>
     );
-  }
+}
 
   // Render Room of Requirement screen
   if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
