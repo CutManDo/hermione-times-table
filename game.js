@@ -141,10 +141,10 @@ const checkFatLadyAnswer = (selectedAnswer) => {
         }, 1500);
       } else {
         setMessage('נכון מאוד!');
-  setCurrentQuestion(prev => {
-  const nextQuestion = prev + 1; // עדכון השאלה קודם
-  setTimeout(() => generateProblem(), 0); // יצירת שאלה חדשה אחרי העדכון
-  return nextQuestion; // החזרת השאלה המעודכנת
+ setCurrentQuestion(prev => {
+  const nextQuestion = prev + 1;
+  generateProblem();
+  return nextQuestion;
 });
 setUserAnswer('');
       }
