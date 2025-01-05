@@ -51,6 +51,7 @@ function HermioneMathGame() {
   const [problem, setProblem] = React.useState(null);
   const [userAnswer, setUserAnswer] = React.useState('');
   const [message, setMessage] = React.useState('');
+  const [score, setScore] = React.useState(0);
   // Generate math problem
   const generateProblem = React.useCallback(() => {
     const isEasyQuestion = currentQuestion % 5 === 4;
@@ -134,26 +135,26 @@ function HermioneMathGame() {
 
 const checkFatLadyAnswer = (selectedAnswer) => {
     if (selectedAnswer === problem.correctAnswer) {
-      const nextQuestion = currentQuestion + 1;
-      if (nextQuestion === 15) {  
-        setMessage('מצוין! הגברת השמנה מאפשרת לך להיכנס!');
-        setTimeout(() => {
-          setGameState(GAME_STATES.POTIONS_INTRO);
-        }, 1500);
-      } else {
-        setMessage('נכון מאוד!');
-        setCurrentQuestion(nextQuestion);
-        generateProblem();
-      }
-    } else {
-      setMessage('לא נכון, נסי שוב!');
-      setLives(prev => {
-        const newLives = prev - 1;
-        if (newLives <= 0) {
-          setGameState(GAME_STATES.GAME_OVER);
+        setScore(score + 1);  // מוסיף נקודה על כל תשובה נכונה
+        
+        if (score >= 14) {  // אחרי 15 תשובות נכונות
+            setMessage('מצוין! הגברת השמנה מאפשרת לך להיכנס!');
+            setTimeout(() => {
+                setGameState(GAME_STATES.POTIONS_INTRO);
+            }, 1500);
+        } else {
+            setMessage('נכון מאוד!');
+            generateProblem();  // שאלה חדשה
         }
-        return newLives;
-      });
+    } else {
+        setMessage('לא נכון, נסי שוב!');
+        setLives(prev => {
+            const newLives = prev - 1;
+            if (newLives <= 0) {
+                setGameState(GAME_STATES.GAME_OVER);
+            }
+            return newLives;
+        });
     }
 };
   // Regular answer check
@@ -226,15 +227,16 @@ if (gameState === GAME_STATES.FAT_LADY) {
   return (
     <div className="game-container">
       <div className="game-card">
-        <div className="text-center">  {/* הוספת div זה */}
+        <div className="text-center">
           <h1 className="text-3xl font-bold mb-6 text-purple-800">הגברת השמנה</h1>
-          <p className="text-lg mb-4">עלייך לענות על 15 שאלות כדי להיכנס למועדון גריפינדור</p>
+          <p className="text-lg mb-4">
+            עלייך לענות נכון על 15 שאלות כדי להיכנס. ענית נכון על {score} שאלות!
+          </p>
           <div className="flex justify-center gap-2 mb-4">
             {[...Array(lives)].map((_, i) => (
               <span key={i} className="text-red-500 text-2xl">❤️</span>
             ))}
           </div>
-          <p className="text-md mb-4">שאלה {currentQuestion + 1} מתוך 15</p>
           {problem && (
             <div>
               <p className="text-xl font-bold mb-4">{problem.num1} × {problem.num2} = ?</p>
