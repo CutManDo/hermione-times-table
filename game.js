@@ -183,19 +183,18 @@ if (isCorrect) {
         
         if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
             if (currentCharacter === CHARACTERS.draco) {
-                setMessage('דראקו נסוג! אבל מי זה מגיע...');
-                setTimeout(() => {
-                    setCurrentCharacter(CHARACTERS.filch);
-                    setCurrentQuestion(0);
-                    generateProblem();
-                }, 1500);
-            } else if (currentCharacter === CHARACTERS.filch) {
-                setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
-                setTimeout(() => {
-                    setCurrentCharacter(CHARACTERS.pansy);
-                    setCurrentQuestion(0);
-                    generateProblem();
-                }, 1500);
+    setMessage('דראקו נסוג! אבל מי זה מגיע...');
+    setTimeout(() => {
+        setCurrentCharacter(CHARACTERS.filch);
+        generateProblem();
+    }, 1500);
+} else if (currentCharacter === CHARACTERS.filch) {
+    setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
+    setTimeout(() => {
+        setCurrentCharacter(CHARACTERS.pansy);
+        generateProblem();
+    }, 1500);
+}
             } else {
                 setMessage('הצלחת לעבור את כולם!');
                 setTimeout(() => {
