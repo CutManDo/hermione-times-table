@@ -134,20 +134,15 @@ function HermioneMathGame() {
 
 const checkFatLadyAnswer = (selectedAnswer) => {
     if (selectedAnswer === problem.correctAnswer) {
-      const nextQuestion = currentQuestion + 1;
-      console.log('Current question:', currentQuestion, 'Next question:', nextQuestion); // דיבוג
-
-      if (nextQuestion === 15) {  // שינינו מ->= ל-===
+      if (currentQuestion === 14) {  // אם זו השאלה האחרונה (0-14)
         setMessage('מצוין! הגברת השמנה מאפשרת לך להיכנס!');
         setTimeout(() => {
           setGameState(GAME_STATES.POTIONS_INTRO);
         }, 1500);
       } else {
         setMessage('נכון מאוד!');
-        setCurrentQuestion(nextQuestion);
-        setTimeout(() => {
-          generateProblem();
-        }, 500);
+        generateProblem();  // קודם ניצור שאלה חדשה
+        setCurrentQuestion(currentQuestion + 1);  // ואז נעדכן את המספר
       }
     } else {
       setMessage('לא נכון, נסי שוב!');
