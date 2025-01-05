@@ -147,8 +147,6 @@ const checkFatLadyAnswer = (selectedAnswer) => {
   return nextQuestion; // החזרת השאלה המעודכנת
 });
 setUserAnswer('');
-  return nextQuestion;
-});
       }
     } else {
       setMessage('לא נכון, נסי שוב!');
