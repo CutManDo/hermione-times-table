@@ -141,8 +141,11 @@ const checkFatLadyAnswer = (selectedAnswer) => {
         }, 1500);
       } else {
         setMessage('נכון מאוד!');
-        generateProblem();  // קודם ניצור שאלה חדשה
-        setCurrentQuestion(currentQuestion + 1);  // ואז נעדכן את המספר
+        setCurrentQuestion(prev => {  // קודם נעדכן את השאלה
+  const nextQuestion = prev + 1;
+  generateProblem();  // ואז ניצור שאלה חדשה
+  return nextQuestion;
+});
       }
     } else {
       setMessage('לא נכון, נסי שוב!');
