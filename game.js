@@ -132,7 +132,7 @@ function HermioneMathGame() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
- const checkFatLadyAnswer = (selectedAnswer) => {
+const checkFatLadyAnswer = (selectedAnswer) => {
     if (selectedAnswer === problem.correctAnswer) {
       const nextQuestion = currentQuestion + 1;
       console.log('Current question:', currentQuestion, 'Next question:', nextQuestion); // דיבוג
