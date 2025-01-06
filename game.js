@@ -87,7 +87,7 @@ function HermioneMathGame() {
         setLives(3);
         setTimeLeft(0);
         setCurrentQuestion(0);
-        setCurrentCharacter(CHARACTERS.fatLady);
+        setCurrentCharacter(CHARACTERS.Lady);
         generateProblem();
         break;
       case GAME_STATES.POTIONS_CLASS:
@@ -138,7 +138,7 @@ const checkFatLadyAnswer = (selectedAnswer) => {
         const newScore = score + 1;  // שומרים את הציון החדש במשתנה
         setScore(newScore);  // מעדכנים את הציון
         
-        if (newScore >= 2) {  // בודקים לפי הציון החדש במקום הישן
+        if (newScore >= 15) {  // בודקים לפי הציון החדש במקום הישן
             setMessage('מצוין! הגברת השמנה מאפשרת לך להיכנס!');
             setTimeout(() => {
                 setGameState(GAME_STATES.POTIONS_INTRO);
