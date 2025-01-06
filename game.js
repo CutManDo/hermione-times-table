@@ -199,14 +199,12 @@ const checkFatLadyAnswer = (selectedAnswer) => {
                 setMessage('דראקו נסוג! אבל מי זה מגיע...');
                 setTimeout(() => {
                     setCurrentCharacter(CHARACTERS.filch);
-                    setCurrentQuestion(0);
                     generateProblem();
                 }, 1500);
             } else if (currentCharacter === CHARACTERS.filch) {
                 setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
                 setTimeout(() => {
                     setCurrentCharacter(CHARACTERS.pansy);
-                    setCurrentQuestion(0);
                     generateProblem();
                 }, 1500);
             } else {
