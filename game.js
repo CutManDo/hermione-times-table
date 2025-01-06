@@ -159,8 +159,7 @@ const checkFatLadyAnswer = (selectedAnswer) => {
         });
     }
 };
-  // Regular answer check
-const checkAnswer = () => {
+  const checkRoomOfRequirementAnswer = () => {
     if (!userAnswer) return;
     
     const answer = parseInt(userAnswer);
@@ -169,22 +168,45 @@ const checkAnswer = () => {
         setCurrentQuestion(newQuestion);
         setMessage('מצוין! הצלחת להדוף את הלחש!');
         
-        if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT && newQuestion >= 15) {
+        if (newQuestion >= 15) {
             setMessage('הצלחת לעבור את חדר הנחיצות!');
             setTimeout(() => {
                 setGameState(GAME_STATES.BELLATRIX_INTRO);
             }, 1500);
-        } else if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
+        } else {
+            generateProblem();
+        }
+    } else {
+        setMessage('לא נכון, המשחק נגמר!');
+        setTimeout(() => {
+            setGameState(GAME_STATES.GAME_OVER);
+        }, 1500);
+    }
+    setUserAnswer('');
+};
+  // Regular answer check
+ const checkAnswer = () => {
+    if (!userAnswer) return;
+    
+    const answer = parseInt(userAnswer);
+    if (answer === problem.correctAnswer) {
+        const newQuestion = currentQuestion + 1;
+        setCurrentQuestion(newQuestion);
+        setMessage('מצוין! הצלחת להדוף את הלחש!');
+        
+        if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
             if (currentCharacter === CHARACTERS.draco) {
                 setMessage('דראקו נסוג! אבל מי זה מגיע...');
                 setTimeout(() => {
                     setCurrentCharacter(CHARACTERS.filch);
+                    setCurrentQuestion(0);
                     generateProblem();
                 }, 1500);
             } else if (currentCharacter === CHARACTERS.filch) {
                 setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
                 setTimeout(() => {
                     setCurrentCharacter(CHARACTERS.pansy);
+                    setCurrentQuestion(0);
                     generateProblem();
                 }, 1500);
             } else {
@@ -197,20 +219,14 @@ const checkAnswer = () => {
             generateProblem();
         }
     } else {
-        if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
-            setMessage('לא נכון, המשחק נגמר!');
-            setTimeout(() => {
-                setGameState(GAME_STATES.GAME_OVER);
-            }, 1500);
-        } else {
-            setMessage('לא נכון, נסי שוב!');
-            if (lives > 0) {
-                setLives(prev => prev - 1);
-            }
+        setMessage('לא נכון, נסי שוב!');
+        if (lives > 0) {
+            setLives(prev => prev - 1);
         }
     }
     setUserAnswer('');
 };
+
   const nextState = () => {
     switch (gameState) {
       case GAME_STATES.ROOM_OF_REQUIREMENT:
@@ -357,13 +373,13 @@ if (gameState === GAME_STATES.POTIONS_CLASS) {
                 placeholder="?"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') {
-                    checkAnswer();
+                    checkRoomOfRequirementAnswer();
                   }
                 }}
               />
               <button 
                 className="game-button"
-                onClick={checkAnswer}
+                onClick={checkRoomOfRequirementAnswer}
               >
                 הטל לחש!
               </button>
