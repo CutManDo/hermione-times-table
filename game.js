@@ -92,6 +92,7 @@ function HermioneMathGame() {
         break;
       case GAME_STATES.POTIONS_CLASS:
         setTimeLeft(300);
+        setCurrentQuestion(0);
         setCurrentCharacter(CHARACTERS.draco);
         generateProblem();
         break;
@@ -137,7 +138,7 @@ const checkFatLadyAnswer = (selectedAnswer) => {
         const newScore = score + 1;  // שומרים את הציון החדש במשתנה
         setScore(newScore);  // מעדכנים את הציון
         
-        if (newScore >= 5) {  // בודקים לפי הציון החדש במקום הישן
+        if (newScore >= 15) {  // בודקים לפי הציון החדש במקום הישן
             setMessage('מצוין! הגברת השמנה מאפשרת לך להיכנס!');
             setTimeout(() => {
                 setGameState(GAME_STATES.POTIONS_INTRO);
@@ -158,31 +159,6 @@ const checkFatLadyAnswer = (selectedAnswer) => {
         });
     }
 };
-  const checkRoomOfRequirementAnswer = () => {
-    if (!userAnswer) return;
-    
-    const answer = parseInt(userAnswer);
-    if (answer === problem.correctAnswer) {
-        const newQuestion = currentQuestion + 1;
-        setCurrentQuestion(newQuestion);
-        setMessage('מצוין! הצלחת להדוף את הלחש!');
-        
-        if (newQuestion >= 15) {
-            setMessage('הצלחת להכנס לחדר הנחיצות!');
-            setTimeout(() => {
-                setGameState(GAME_STATES.BELLATRIX_INTRO);
-            }, 1500);
-        } else {
-            generateProblem();
-        }
-    } else {
-        setMessage('לא נכון, המשחק נגמר!');
-        setTimeout(() => {
-            setGameState(GAME_STATES.GAME_OVER);
-        }, 1500);
-    }
-    setUserAnswer('');
-};
   // Regular answer check
  const checkAnswer = () => {
     if (!userAnswer) return;
@@ -193,28 +169,29 @@ const checkFatLadyAnswer = (selectedAnswer) => {
         setCurrentQuestion(newQuestion);
         setMessage('מצוין! הצלחת להדוף את הלחש!');
         
-if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
-    if (currentCharacter === CHARACTERS.draco) {
-        setMessage('דראקו נסוג! אבל מי זה מגיע...');
-        setTimeout(() => {
-            setCurrentCharacter(CHARACTERS.filch);
+        if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
+            if (currentCharacter === CHARACTERS.draco) {
+                setMessage('דראקו נסוג! אבל מי זה מגיע...');
+                setTimeout(() => {
+                    setCurrentCharacter(CHARACTERS.filch);
+                    setCurrentQuestion(0);
+                    generateProblem();
+                }, 1500);
+            } else if (currentCharacter === CHARACTERS.filch) {
+                setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
+                setTimeout(() => {
+                    setCurrentCharacter(CHARACTERS.pansy);
+                    setCurrentQuestion(0);
+                    generateProblem();
+                }, 1500);
+            } else {
+                setMessage('הצלחת לעבור את כולם!');
+                setTimeout(() => {
+                    setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
+                }, 1500);
+            }
+        } else {
             generateProblem();
-        }, 1500);
-    } else if (currentCharacter === CHARACTERS.filch) {
-        setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
-        setTimeout(() => {
-            setCurrentCharacter(CHARACTERS.pansy);
-            generateProblem();
-        }, 1500);
-    } else {
-        setMessage('הצלחת לעבור את כולם!');
-        setTimeout(() => {
-            setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
-        }, 1500);
-    }
-} else {
-    generateProblem();
-}
         }
     } else {
         setMessage('לא נכון, נסי שוב!');
@@ -348,46 +325,53 @@ if (gameState === GAME_STATES.POTIONS_CLASS) {
 
   // Render Room of Requirement screen
   if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
-  return (
-    <div className="game-container">
-      <div className="game-card">
-        <div className="flex justify-between items-center mb-6">
-          <div className="text-lg">שאלה {currentQuestion + 1}/15</div>
-          <div className="text-xl font-bold bg-purple-100 px-4 py-2 rounded-lg">
-            {formatTime(timeLeft)}
+    return (
+      <div className="game-container">
+        <div className="game-card">
+          <div className="flex justify-between items-center mb-6">
+            <div className="text-lg">שאלה {currentQuestion + 1}/15</div>
+            <div className="text-xl font-bold bg-purple-100 px-4 py-2 rounded-lg">
+              {formatTime(timeLeft)}
+            </div>
           </div>
-        </div>
-        
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">חדר הנחיצות</h2>
-          <div className="space-y-4">
-            <p className="text-2xl font-bold">{problem.num1} × {problem.num2} = ?</p>
-            <div className="flex justify-center gap-4">
-              <input
-                type="number"
-                value={userAnswer}
-                onChange={(e) => setUserAnswer(e.target.value)}
-                className="w-24 text-center text-xl border rounded p-2"
-                placeholder="?"
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter') {
-                    checkRoomOfRequirementAnswer();
-                  }
-                }}
-              />
-              <button 
-                className="game-button"
-                onClick={checkRoomOfRequirementAnswer}
-              >
-                הטל לחש!
-              </button>
+          
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-4">חדר הנחיצות</h2>
+            <div className="flex justify-center gap-2 mb-4">
+              {[...Array(lives)].map((_, i) => (
+                <span key={i} className="text-red-500 text-2xl">❤️</span>
+              ))}
+            </div>
+            <div className="space-y-4">
+              <p className="text-2xl font-bold">
+                {problem.num1} × {problem.num2} = {problem.correctAnswer}
+              </p>
+              <div className="flex justify-center gap-4">
+                <input
+                  type="number"
+                  value={userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  className="w-24 text-center text-xl border rounded p-2"
+                  placeholder="?"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      checkAnswer();
+                    }
+                  }}
+                />
+                <button 
+                  className="game-button"
+                  onClick={checkAnswer}
+                >
+                  הטל לחש!
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 // Render Bellatrix Fight screen
   if (gameState === GAME_STATES.BELLATRIX_FIGHT) {
     return (
