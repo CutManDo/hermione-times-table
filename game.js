@@ -169,15 +169,11 @@ const checkAnswer = () => {
         setCurrentQuestion(newQuestion);
         setMessage('מצוין! הצלחת להדוף את הלחש!');
         
-        if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
-            if (newQuestion >= 15) {
-                setMessage('הצלחת לעבור את חדר הנחיצות!');
-                setTimeout(() => {
-                    setGameState(GAME_STATES.BELLATRIX_INTRO);
-                }, 1500);
-            } else {
-                generateProblem();
-            }
+        if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT && newQuestion >= 15) {
+            setMessage('הצלחת לעבור את חדר הנחיצות!');
+            setTimeout(() => {
+                setGameState(GAME_STATES.BELLATRIX_INTRO);
+            }, 1500);
         } else if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
             if (currentCharacter === CHARACTERS.draco) {
                 setMessage('דראקו נסוג! אבל מי זה מגיע...');
@@ -215,7 +211,6 @@ const checkAnswer = () => {
     }
     setUserAnswer('');
 };
-
   const nextState = () => {
     switch (gameState) {
       case GAME_STATES.ROOM_OF_REQUIREMENT:
