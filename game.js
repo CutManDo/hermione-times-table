@@ -87,7 +87,7 @@ function HermioneMathGame() {
         setLives(3);
         setTimeLeft(0);
         setCurrentQuestion(0);
-        setCurrentCharacter(CHARACTERS.Lady);
+        setCurrentCharacter(CHARACTERS.fatLady);
         generateProblem();
         break;
       case GAME_STATES.POTIONS_CLASS:
@@ -135,14 +135,12 @@ function HermioneMathGame() {
 
 const checkFatLadyAnswer = (selectedAnswer) => {
     if (selectedAnswer === problem.correctAnswer) {
-        const newScore = score + 1;  // שומרים את הציון החדש במשתנה
-        setScore(newScore);  // מעדכנים את הציון
+        setScore(score + 1);  // מוסיף נקודה על כל תשובה נכונה
         
-        if (newScore >= 15) {  // בודקים לפי הציון החדש במקום הישן
+        if (score >= 14) {  // אחרי 15 תשובות נכונות
             setMessage('מצוין! הגברת השמנה מאפשרת לך להיכנס!');
             setTimeout(() => {
                 setGameState(GAME_STATES.POTIONS_INTRO);
-                setScore(0);  // מאפסים את הציון לשלב הבא
             }, 1500);
         } else {
             setMessage('נכון מאוד!');
@@ -160,47 +158,38 @@ const checkFatLadyAnswer = (selectedAnswer) => {
     }
 };
   // Regular answer check
- const checkAnswer = () => {
+  const checkAnswer = () => {
     if (!userAnswer) return;
     
     const answer = parseInt(userAnswer);
     if (answer === problem.correctAnswer) {
-        const newQuestion = currentQuestion + 1;
-        setCurrentQuestion(newQuestion);
-        setMessage('מצוין! הצלחת להדוף את הלחש!');
-        
-        if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
-            if (currentCharacter === CHARACTERS.draco) {
-                setMessage('דראקו נסוג! אבל מי זה מגיע...');
-                setTimeout(() => {
-                    setCurrentCharacter(CHARACTERS.filch);
-                    setCurrentQuestion(0);
-                    generateProblem();
-                }, 1500);
-            } else if (currentCharacter === CHARACTERS.filch) {
-                setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
-                setTimeout(() => {
-                    setCurrentCharacter(CHARACTERS.pansy);
-                    setCurrentQuestion(0);
-                    generateProblem();
-                }, 1500);
-            } else {
-                setMessage('הצלחת לעבור את כולם!');
-                setTimeout(() => {
-                    setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
-                }, 1500);
-            }
+      setMessage('מצוין!');
+      const nextQuestion = currentQuestion + 1;
+      if (nextQuestion >= 5) {
+        if (gameState === GAME_STATES.POTIONS_CLASS) {
+          if (currentCharacter === CHARACTERS.draco) {
+            setCurrentCharacter(CHARACTERS.filch);
+          } else if (currentCharacter === CHARACTERS.filch) {
+            setCurrentCharacter(CHARACTERS.pansy);
+          } else {
+            setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
+          }
         } else {
-            generateProblem();
+          setGameState(nextState());
         }
+        setCurrentQuestion(0);
+      } else {
+        setCurrentQuestion(nextQuestion);
+      }
+      generateProblem();
     } else {
-        setMessage('לא נכון, נסי שוב!');
-        if (lives > 0) {
-            setLives(prev => prev - 1);
-        }
+      setMessage('לא נכון, נסי שוב!');
+      if (lives > 0) {
+        setLives(prev => prev - 1);
+      }
     }
     setUserAnswer('');
-};
+  };
 
   const nextState = () => {
     switch (gameState) {
@@ -213,24 +202,25 @@ const checkFatLadyAnswer = (selectedAnswer) => {
     }
   };
   // Render intro screen
-if (gameState === GAME_STATES.INTRO) {
-  return (
-    <div className="game-container">
-      <div className="game-card">
-        <h1 className="text-3xl font-bold mb-6 text-purple-800">הרפתקת החשבון של הרמיוני</h1>
-        <div className="text-center">
-          <p className="text-lg mb-4">ברוכה הבאה להוגוורטס, הרמיוני!</p>
-          <p className="text-md mb-4">האם תצליחי להתמודד עם כל האתגרים שמחכים לך?</p>
-          <button 
-            className="game-button"
-            onClick={() => setGameState(GAME_STATES.FAT_LADY)}>
-            התחילי במסע!
-          </button>
+  if (gameState === GAME_STATES.INTRO) {
+    return (
+      <div className="game-container">
+        <div className="game-card">
+          <h1 className="text-3xl font-bold mb-6 text-purple-800">הרפתקת החשבון של הרמיוני</h1>
+          <div className="text-center">
+            <p className="text-lg mb-4">ברוכה הבאה להוגוורטס, הרמיוני!</p>
+            <p className="text-md mb-4">האם תצליחי להתמודד עם כל האתגרים שמחכים לך?</p>
+            <button 
+              className="game-button"
+              onClick={() => setGameState(GAME_STATES.FAT_LADY)}
+            >
+              התחילי במסע!
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
 // Render Fat Lady screen
 if (gameState === GAME_STATES.FAT_LADY) {
@@ -272,12 +262,12 @@ if (gameState === GAME_STATES.FAT_LADY) {
   );
 }
 // Render Potions Class screen
-if (gameState === GAME_STATES.POTIONS_CLASS) {
+  if (gameState === GAME_STATES.POTIONS_CLASS) {
     return (
       <div className="game-container">
         <div className="game-card">
           <div className="flex justify-between items-center mb-6">
-            {/* הסרנו את תצוגת מספר השאלה */}
+            <div className="text-lg">שאלה {currentQuestion + 1}/5</div>
             <div className="text-xl font-bold bg-purple-100 px-4 py-2 rounded-lg">
               {formatTime(timeLeft)}
             </div>
@@ -320,7 +310,7 @@ if (gameState === GAME_STATES.POTIONS_CLASS) {
         </div>
       </div>
     );
-}
+  }
 
   // Render Room of Requirement screen
   if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
