@@ -213,25 +213,24 @@ const checkFatLadyAnswer = (selectedAnswer) => {
     }
   };
   // Render intro screen
-  if (gameState === GAME_STATES.INTRO) {
-    return (
-      <div className="game-container">
-        <div className="game-card">
-          <h1 className="text-3xl font-bold mb-6 text-purple-800">הרפתקת החשבון של הרמיוני</h1>
-          <div className="text-center">
-            <p className="text-lg mb-4">ברוכה הבאה להוגוורטס, הרמיוני!</p>
-            <p className="text-md mb-4">האם תצליחי להתמודד עם כל האתגרים שמחכים לך?</p>
-            <button 
-              className="game-button"
-              onClick={() => setGameState(GAME_STATES.FAT_LADY)}
-            >
-              התחילי במסע!
-            </button>
-          </div>
+if (gameState === GAME_STATES.INTRO) {
+  return (
+    <div className="game-container">
+      <div className="game-card">
+        <h1 className="text-3xl font-bold mb-6 text-purple-800">הרפתקת החשבון של הרמיוני</h1>
+        <div className="text-center">
+          <p className="text-lg mb-4">ברוכה הבאה להוגוורטס, הרמיוני!</p>
+          <p className="text-md mb-4">האם תצליחי להתמודד עם כל האתגרים שמחכים לך?</p>
+          <button 
+            className="game-button"
+            onClick={() => setGameState(GAME_STATES.FAT_LADY)}>
+            התחילי במסע!
+          </button>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
 // Render Fat Lady screen
 if (gameState === GAME_STATES.FAT_LADY) {
