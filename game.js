@@ -160,46 +160,46 @@ const checkFatLadyAnswer = (selectedAnswer) => {
     }
 };
   // Regular answer check
- const checkAnswer = () => {
-    if (!userAnswer) return;
+const checkAnswer = () => {
+  if (!userAnswer) return;
+  
+  const answer = parseInt(userAnswer);
+  if (answer === problem.correctAnswer) {
+    const newScore = score + 1; // מגדילים את הציון במקום מספר השאלה
+    setScore(newScore);
+    setMessage('מצוין! הצלחת להדוף את הלחש!');
     
-    const answer = parseInt(userAnswer);
-    if (answer === problem.correctAnswer) {
-        const newQuestion = currentQuestion + 1;
-        setCurrentQuestion(newQuestion);
-        setMessage('מצוין! הצלחת להדוף את הלחש!');
-        
-        if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
-            if (currentCharacter === CHARACTERS.draco) {
-                setMessage('דראקו נסוג! אבל מי זה מגיע...');
-                setTimeout(() => {
-                    setCurrentCharacter(CHARACTERS.filch);
-                    setCurrentQuestion(0);
-                    generateProblem();
-                }, 1500);
-            } else if (currentCharacter === CHARACTERS.filch) {
-                setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
-                setTimeout(() => {
-                    setCurrentCharacter(CHARACTERS.pansy);
-                    setCurrentQuestion(0);
-                    generateProblem();
-                }, 1500);
-            } else {
-                setMessage('הצלחת לעבור את כולם!');
-                setTimeout(() => {
-                    setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
-                }, 1500);
-            }
-        } else {
-            generateProblem();
-        }
+    if (newScore >= 5) { // בדיקת מעבר שלב אחרי 5 תשובות נכונות
+      if (currentCharacter === CHARACTERS.draco) {
+        setMessage('דראקו נסוג! אבל מי זה מגיע...');
+        setTimeout(() => {
+          setCurrentCharacter(CHARACTERS.filch);
+          setScore(0); // מאפסים את הציון
+          generateProblem();
+        }, 1500);
+      } else if (currentCharacter === CHARACTERS.filch) {
+        setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
+        setTimeout(() => {
+          setCurrentCharacter(CHARACTERS.pansy);
+          setScore(0); // מאפסים את הציון
+          generateProblem();
+        }, 1500);
+      } else {
+        setMessage('הצלחת לעבור את כולם!');
+        setTimeout(() => {
+          setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
+        }, 1500);
+      }
     } else {
-        setMessage('לא נכון, נסי שוב!');
-        if (lives > 0) {
-            setLives(prev => prev - 1);
-        }
+      generateProblem(); // עוברים לשאלה הבאה
     }
-    setUserAnswer('');
+  } else {
+    setMessage('לא נכון, נסי שוב!');
+    if (lives > 0) {
+      setLives(prev => prev - 1);
+    }
+  }
+  setUserAnswer('');
 };
 
   const nextState = () => {
@@ -274,53 +274,53 @@ if (gameState === GAME_STATES.FAT_LADY) {
 }
 // Render Potions Class screen
 if (gameState === GAME_STATES.POTIONS_CLASS) {
-    return (
-      <div className="game-container">
-        <div className="game-card">
-          <div className="flex justify-between items-center mb-6">
-            {/* הסרנו את תצוגת מספר השאלה */}
-            <div className="text-xl font-bold bg-purple-100 px-4 py-2 rounded-lg">
-              {formatTime(timeLeft)}
-            </div>
-          </div>
-          
-          <div className="text-center">
-            <h2 className="text-xl font-bold mb-2">{currentCharacter.name}</h2>
-            <p className="text-lg mb-4">{currentCharacter.message}</p>
-            
-            {problem && (
-              <div className="space-y-4">
-                <p className="text-2xl font-bold">{problem.num1} × {problem.num2} = ?</p>
-                <div className="flex justify-center gap-4">
-                  <input
-                    type="number"
-                    value={userAnswer}
-                    onChange={(e) => setUserAnswer(e.target.value)}
-                    className="w-24 text-center text-xl border rounded p-2"
-                    placeholder="?"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        checkAnswer();
-                      }
-                    }}
-                  />
-                  <button 
-                    className="game-button"
-                    onClick={checkAnswer}
-                  >
-                    הטל לחש!
-                  </button>
-                </div>
-              </div>
-            )}
-            
-            {message && (
-              <p className="mt-4 text-lg font-bold">{message}</p>
-            )}
+  return (
+    <div className="game-container">
+      <div className="game-card">
+        <div className="flex justify-between items-center mb-6">
+          <div className="text-lg">תשובות נכונות: {score}/5</div>
+          <div className="text-xl font-bold bg-purple-100 px-4 py-2 rounded-lg">
+            {formatTime(timeLeft)}
           </div>
         </div>
+        
+        <div className="text-center">
+          <h2 className="text-xl font-bold mb-2">{currentCharacter.name}</h2>
+          <p className="text-lg mb-4">{currentCharacter.message}</p>
+          
+          {problem && (
+            <div className="space-y-4">
+              <p className="text-2xl font-bold">{problem.num1} × {problem.num2} = ?</p>
+              <div className="flex justify-center gap-4">
+                <input
+                  type="number"
+                  value={userAnswer}
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  className="w-24 text-center text-xl border rounded p-2"
+                  placeholder="?"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      checkAnswer();
+                    }
+                  }}
+                />
+                <button 
+                  className="game-button"
+                  onClick={checkAnswer}
+                >
+                  הטל לחש!
+                </button>
+              </div>
+            </div>
+          )}
+          
+          {message && (
+            <p className="mt-4 text-lg font-bold">{message}</p>
+          )}
+        </div>
       </div>
-    );
+    </div>
+  );
 }
 
   // Render Room of Requirement screen
@@ -497,3 +497,4 @@ root.render(
     React.createElement(HermioneMathGame)
   )
 );
+
