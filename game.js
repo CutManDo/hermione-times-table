@@ -193,27 +193,28 @@ const checkFatLadyAnswer = (selectedAnswer) => {
         setCurrentQuestion(newQuestion);
         setMessage('מצוין! הצלחת להדוף את הלחש!');
         
-        if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
-            if (currentCharacter === CHARACTERS.draco) {
-                setMessage('דראקו נסוג! אבל מי זה מגיע...');
-                setTimeout(() => {
-                    setCurrentCharacter(CHARACTERS.filch);
-                    generateProblem();
-                }, 1500);
-            } else if (currentCharacter === CHARACTERS.filch) {
-                setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
-                setTimeout(() => {
-                    setCurrentCharacter(CHARACTERS.pansy);
-                    generateProblem();
-                }, 1500);
-            } else {
-                setMessage('הצלחת לעבור את כולם!');
-                setTimeout(() => {
-                    setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
-                }, 1500);
-            }
-        } else {
+if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
+    if (currentCharacter === CHARACTERS.draco) {
+        setMessage('דראקו נסוג! אבל מי זה מגיע...');
+        setTimeout(() => {
+            setCurrentCharacter(CHARACTERS.filch);
             generateProblem();
+        }, 1500);
+    } else if (currentCharacter === CHARACTERS.filch) {
+        setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
+        setTimeout(() => {
+            setCurrentCharacter(CHARACTERS.pansy);
+            generateProblem();
+        }, 1500);
+    } else {
+        setMessage('הצלחת לעבור את כולם!');
+        setTimeout(() => {
+            setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
+        }, 1500);
+    }
+} else {
+    generateProblem();
+}
         }
     } else {
         setMessage('לא נכון, נסי שוב!');
