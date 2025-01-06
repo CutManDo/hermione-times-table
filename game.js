@@ -164,12 +164,12 @@ const checkAnswer = () => {
     if (!userAnswer) return;
     
     const answer = parseInt(userAnswer);
-    if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
-        if (answer === problem.correctAnswer) {
-            const newQuestion = currentQuestion + 1;
-            setCurrentQuestion(newQuestion);
-            setMessage('מצוין! הצלחת להדוף את הלחש!');
-            
+    if (answer === problem.correctAnswer) {
+        const newQuestion = currentQuestion + 1;
+        setCurrentQuestion(newQuestion);
+        setMessage('מצוין! הצלחת להדוף את הלחש!');
+        
+        if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
             if (newQuestion >= 15) {
                 setMessage('הצלחת לעבור את חדר הנחיצות!');
                 setTimeout(() => {
@@ -178,49 +178,42 @@ const checkAnswer = () => {
             } else {
                 generateProblem();
             }
+        } else if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
+            if (currentCharacter === CHARACTERS.draco) {
+                setMessage('דראקו נסוג! אבל מי זה מגיע...');
+                setTimeout(() => {
+                    setCurrentCharacter(CHARACTERS.filch);
+                    generateProblem();
+                }, 1500);
+            } else if (currentCharacter === CHARACTERS.filch) {
+                setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
+                setTimeout(() => {
+                    setCurrentCharacter(CHARACTERS.pansy);
+                    generateProblem();
+                }, 1500);
+            } else {
+                setMessage('הצלחת לעבור את כולם!');
+                setTimeout(() => {
+                    setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
+                }, 1500);
+            }
         } else {
+            generateProblem();
+        }
+    } else {
+        if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
             setMessage('לא נכון, המשחק נגמר!');
             setTimeout(() => {
                 setGameState(GAME_STATES.GAME_OVER);
             }, 1500);
-        }
-        setUserAnswer('');
-    } else {
-        if (answer === problem.correctAnswer) {
-            const newQuestion = currentQuestion + 1;
-            setCurrentQuestion(newQuestion);
-            setMessage('מצוין! הצלחת להדוף את הלחש!');
-            
-            if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
-                if (currentCharacter === CHARACTERS.draco) {
-                    setMessage('דראקו נסוג! אבל מי זה מגיע...');
-                    setTimeout(() => {
-                        setCurrentCharacter(CHARACTERS.filch);
-                        generateProblem();
-                    }, 1500);
-                } else if (currentCharacter === CHARACTERS.filch) {
-                    setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
-                    setTimeout(() => {
-                        setCurrentCharacter(CHARACTERS.pansy);
-                        generateProblem();
-                    }, 1500);
-                } else {
-                    setMessage('הצלחת לעבור את כולם!');
-                    setTimeout(() => {
-                        setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
-                    }, 1500);
-                }
-            } else {
-                generateProblem();
-            }
         } else {
             setMessage('לא נכון, נסי שוב!');
             if (lives > 0) {
                 setLives(prev => prev - 1);
             }
         }
-        setUserAnswer('');
     }
+    setUserAnswer('');
 };
 
   const nextState = () => {
