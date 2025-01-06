@@ -135,12 +135,14 @@ function HermioneMathGame() {
 
 const checkFatLadyAnswer = (selectedAnswer) => {
     if (selectedAnswer === problem.correctAnswer) {
-        setScore(score + 1);  // מוסיף נקודה על כל תשובה נכונה
+        const newScore = score + 1;  // שומרים את הציון החדש במשתנה
+        setScore(newScore);  // מעדכנים את הציון
         
-        if (score >= 14) {  // אחרי 15 תשובות נכונות
+        if (newScore >= 15) {  // בודקים לפי הציון החדש במקום הישן
             setMessage('מצוין! הגברת השמנה מאפשרת לך להיכנס!');
             setTimeout(() => {
                 setGameState(GAME_STATES.POTIONS_INTRO);
+                setScore(0);  // מאפסים את הציון לשלב הבא
             }, 1500);
         } else {
             setMessage('נכון מאוד!');
@@ -158,38 +160,47 @@ const checkFatLadyAnswer = (selectedAnswer) => {
     }
 };
   // Regular answer check
-  const checkAnswer = () => {
+ const checkAnswer = () => {
     if (!userAnswer) return;
     
     const answer = parseInt(userAnswer);
     if (answer === problem.correctAnswer) {
-      setMessage('מצוין!');
-      const nextQuestion = currentQuestion + 1;
-      if (nextQuestion >= 5) {
-        if (gameState === GAME_STATES.POTIONS_CLASS) {
-          if (currentCharacter === CHARACTERS.draco) {
-            setCurrentCharacter(CHARACTERS.filch);
-          } else if (currentCharacter === CHARACTERS.filch) {
-            setCurrentCharacter(CHARACTERS.pansy);
-          } else {
-            setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
-          }
+        const newQuestion = currentQuestion + 1;
+        setCurrentQuestion(newQuestion);
+        setMessage('מצוין! הצלחת להדוף את הלחש!');
+        
+        if (newQuestion >= 5 && gameState === GAME_STATES.POTIONS_CLASS) {
+            if (currentCharacter === CHARACTERS.draco) {
+                setMessage('דראקו נסוג! אבל מי זה מגיע...');
+                setTimeout(() => {
+                    setCurrentCharacter(CHARACTERS.filch);
+                    setCurrentQuestion(0);
+                    generateProblem();
+                }, 1500);
+            } else if (currentCharacter === CHARACTERS.filch) {
+                setMessage('פילץ\' בורח! אבל פנסי מתקרבת...');
+                setTimeout(() => {
+                    setCurrentCharacter(CHARACTERS.pansy);
+                    setCurrentQuestion(0);
+                    generateProblem();
+                }, 1500);
+            } else {
+                setMessage('הצלחת לעבור את כולם!');
+                setTimeout(() => {
+                    setGameState(GAME_STATES.ROOM_OF_REQUIREMENT_INTRO);
+                }, 1500);
+            }
         } else {
-          setGameState(nextState());
+            generateProblem();
         }
-        setCurrentQuestion(0);
-      } else {
-        setCurrentQuestion(nextQuestion);
-      }
-      generateProblem();
     } else {
-      setMessage('לא נכון, נסי שוב!');
-      if (lives > 0) {
-        setLives(prev => prev - 1);
-      }
+        setMessage('לא נכון, נסי שוב!');
+        if (lives > 0) {
+            setLives(prev => prev - 1);
+        }
     }
     setUserAnswer('');
-  };
+};
 
   const nextState = () => {
     switch (gameState) {
@@ -262,12 +273,12 @@ if (gameState === GAME_STATES.FAT_LADY) {
   );
 }
 // Render Potions Class screen
-  if (gameState === GAME_STATES.POTIONS_CLASS) {
+if (gameState === GAME_STATES.POTIONS_CLASS) {
     return (
       <div className="game-container">
         <div className="game-card">
           <div className="flex justify-between items-center mb-6">
-            <div className="text-lg">שאלה {currentQuestion + 1}/5</div>
+            {/* הסרנו את תצוגת מספר השאלה */}
             <div className="text-xl font-bold bg-purple-100 px-4 py-2 rounded-lg">
               {formatTime(timeLeft)}
             </div>
@@ -310,7 +321,7 @@ if (gameState === GAME_STATES.FAT_LADY) {
         </div>
       </div>
     );
-  }
+}
 
   // Render Room of Requirement screen
   if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
