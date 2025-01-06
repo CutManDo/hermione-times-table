@@ -138,7 +138,7 @@ const checkFatLadyAnswer = (selectedAnswer) => {
         const newScore = score + 1;  // שומרים את הציון החדש במשתנה
         setScore(newScore);  // מעדכנים את הציון
         
-        if (newScore >= 15) {  // בודקים לפי הציון החדש במקום הישן
+        if (newScore >= 2) {  // בודקים לפי הציון החדש במקום הישן
             setMessage('מצוין! הגברת השמנה מאפשרת לך להיכנס!');
             setTimeout(() => {
                 setGameState(GAME_STATES.POTIONS_INTRO);
