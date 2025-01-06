@@ -138,7 +138,7 @@ const checkFatLadyAnswer = (selectedAnswer) => {
         const newScore = score + 1;  // שומרים את הציון החדש במשתנה
         setScore(newScore);  // מעדכנים את הציון
         
-        if (newScore >= 15) {  // בודקים לפי הציון החדש במקום הישן
+        if (newScore >= 5) {  // בודקים לפי הציון החדש במקום הישן
             setMessage('מצוין! הגברת השמנה מאפשרת לך להיכנס!');
             setTimeout(() => {
                 setGameState(GAME_STATES.POTIONS_INTRO);
@@ -169,7 +169,7 @@ const checkFatLadyAnswer = (selectedAnswer) => {
         setMessage('מצוין! הצלחת להדוף את הלחש!');
         
         if (newQuestion >= 15) {
-            setMessage('הצלחת לעבור את חדר הנחיצות!');
+            setMessage('הצלחת להכנס לחדר הנחיצות!');
             setTimeout(() => {
                 setGameState(GAME_STATES.BELLATRIX_INTRO);
             }, 1500);
