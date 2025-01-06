@@ -100,6 +100,7 @@ function HermioneMathGame() {
         setLives(3);
         setTimeLeft(300);
         setCurrentQuestion(0);
+        setScore(0); // איפוס הציון בתחילת השלב
         generateProblem();
         break;
       case GAME_STATES.BELLATRIX_FIGHT:
@@ -157,6 +158,26 @@ const checkFatLadyAnswer = (selectedAnswer) => {
             }
             return newLives;
         });
+    }
+};
+  const checkRoomAnswer = (selectedAnswer) => {
+    if (selectedAnswer === problem.correctAnswer) {
+        const newScore = score + 1; // מעלים את הציון
+        setScore(newScore); // מעדכנים את הציון במסך
+
+        if (newScore >= 15) { // אם הגענו ל-15 תשובות נכונות
+            setMessage('כל הכבוד! הצלחת לעבור את חדר הנחיצות!');
+            setTimeout(() => {
+                setGameState(GAME_STATES.BELLATRIX_INTRO); // עוברים לשלב הבא
+                setScore(0); // מאפסים את הציון לשלב הבא
+            }, 1500);
+        } else {
+            setMessage('נכון מאוד!');
+            generateProblem(); // מציגים שאלה חדשה
+        }
+    } else {
+        setMessage('לא נכון! המשחק נגמר!');
+        setGameState(GAME_STATES.GAME_OVER); // מסיימים את המשחק מיד בטעות אחת
     }
 };
   // Regular answer check
@@ -344,7 +365,7 @@ if (gameState === GAME_STATES.POTIONS_CLASS) {
                   <button
                     key={index}
                     className="game-button"
-                    onClick={() => checkFatLadyAnswer(option)}
+                    onClick={() => checkRoomAnswer(option)}
                   >
                     {option}
                   </button>
