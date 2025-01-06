@@ -65,7 +65,7 @@ function HermioneMathGame() {
       num2 = Math.floor(Math.random() * 6) + 5;
     }
 
-    if (gameState === GAME_STATES.FAT_LADY) {
+    if (gameState === GAME_STATES.FAT_LADY || gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
       const correctAnswer = num1 * num2;
       const options = [
         correctAnswer,
@@ -194,10 +194,8 @@ const checkFatLadyAnswer = (selectedAnswer) => {
             generateProblem();
         }
     } else {
-        setMessage('לא נכון, נסי שוב!');
-        if (lives > 0) {
-            setLives(prev => prev - 1);
-        }
+        setMessage('לא נכון! המשחק נגמר!');
+        setGameState(GAME_STATES.GAME_OVER);
     }
     setUserAnswer('');
 };
@@ -325,53 +323,43 @@ if (gameState === GAME_STATES.POTIONS_CLASS) {
 
   // Render Room of Requirement screen
   if (gameState === GAME_STATES.ROOM_OF_REQUIREMENT) {
-    return (
-      <div className="game-container">
-        <div className="game-card">
-          <div className="flex justify-between items-center mb-6">
-            <div className="text-lg">שאלה {currentQuestion + 1}/15</div>
-            <div className="text-xl font-bold bg-purple-100 px-4 py-2 rounded-lg">
-              {formatTime(timeLeft)}
-            </div>
+  return (
+    <div className="game-container">
+      <div className="game-card">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold mb-6 text-purple-800">חדר הנחיצות</h1>
+          <p className="text-lg mb-4">
+            עלייך לענות נכון על 15 שאלות כדי להמשיך. ענית נכון על {score} שאלות!
+          </p>
+          <div className="flex justify-center gap-2 mb-4">
+            {[...Array(lives)].map((_, i) => (
+              <span key={i} className="text-red-500 text-2xl">❤️</span>
+            ))}
           </div>
-          
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4">חדר הנחיצות</h2>
-            <div className="flex justify-center gap-2 mb-4">
-              {[...Array(lives)].map((_, i) => (
-                <span key={i} className="text-red-500 text-2xl">❤️</span>
-              ))}
-            </div>
-            <div className="space-y-4">
-              <p className="text-2xl font-bold">
-                {problem.num1} × {problem.num2} = {problem.correctAnswer}
-              </p>
-              <div className="flex justify-center gap-4">
-                <input
-                  type="number"
-                  value={userAnswer}
-                  onChange={(e) => setUserAnswer(e.target.value)}
-                  className="w-24 text-center text-xl border rounded p-2"
-                  placeholder="?"
-                  onKeyPress={(e) => {
-                    if (e.key === 'Enter') {
-                      checkAnswer();
-                    }
-                  }}
-                />
-                <button 
-                  className="game-button"
-                  onClick={checkAnswer}
-                >
-                  הטל לחש!
-                </button>
+          {problem && (
+            <div>
+              <p className="text-xl font-bold mb-4">{problem.num1} × {problem.num2} = ?</p>
+              <div className="grid grid-cols-2 gap-4">
+                {problem.options.map((option, index) => (
+                  <button
+                    key={index}
+                    className="game-button"
+                    onClick={() => checkFatLadyAnswer(option)}
+                  >
+                    {option}
+                  </button>
+                ))}
               </div>
             </div>
-          </div>
+          )}
+          {message && (
+            <p className="mt-4 text-lg font-bold">{message}</p>
+          )}
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 // Render Bellatrix Fight screen
   if (gameState === GAME_STATES.BELLATRIX_FIGHT) {
     return (
