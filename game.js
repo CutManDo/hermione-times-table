@@ -92,7 +92,6 @@ function HermioneMathGame() {
         break;
       case GAME_STATES.POTIONS_CLASS:
         setTimeLeft(300);
-        setCurrentQuestion(0);
         setCurrentCharacter(CHARACTERS.draco);
         generateProblem();
         break;
